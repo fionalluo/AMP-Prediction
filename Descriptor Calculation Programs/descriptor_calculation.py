@@ -1,7 +1,7 @@
-# this code caculates 20 physical properties related desciptors for QSAR based
-# ANN model (equations from Fjell et al. J. Med. Chem. 2009, 52,2006-2015)
-
-#!/usr/bin/python
+# This program calculates ~20 different physicochemical properties for a peptide sequence input. These features are 
+# related to hardness, structure, electronegativity, and more. 
+# I combine the descriptors calculated from this program with that of FeatureCalculator.java to create a unified csv file
+# source for equations: Fjell et al. J. Med. Chem. 2009, 52,2006-2015)
 
 import os, time, sys
 
@@ -24,7 +24,7 @@ def radis(element):
         chi = 2.58
     return radi
 
-# Electronegativity for atom input
+# Calculate the electronegativity for atom input
 def part(element):
     if element == 'C':
         chi = 2.55
@@ -38,7 +38,7 @@ def part(element):
         chi = 2.58
     return chi
 
-# Assign the position, radius, and eo information to atoms on peptides
+# Assign the position, radius, and electronegativity information to different atoms on peptides
 coord = [x.strip().decode('utf-8') for x in open('peptide.pdb')]
 length0 = len(coord)
 
@@ -72,7 +72,7 @@ for num in range(0,length):
     rid[num] = radis(cele)
     parc[num] = part(cele)
 
-# Descriptor calculations based on hardness/softness/electrogativity of a peptide
+# Descriptor calculations are based on hardness/softness/electrogativity of a peptide
 
 smol = 0
 smol_pos = 0.0
