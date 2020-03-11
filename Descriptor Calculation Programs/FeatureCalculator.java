@@ -1,8 +1,10 @@
 /**
 
-This program calculates the features of a peptide given a sequence and prints it to a csv file
-Key:
+FeatureCalculator.java program calculates the QSAR features of a peptide given a sequence and returns it as a string with 
+comma separated values. It is the main formatting program which I continue to reference/use methods of in my later 
+description calculator programs. 
 
+Below are the descriptors FeatureCalculator.java can find:
 Sequence,Length,InterfaceHydrophobicity,OctanolHydrophobicity,GRAVY,
 TotalCharge,TotalPositiveCharge,TotalNegativeCharge,AveragePositivePosition,AverageNegativePosition,
 Weight,Antimicrobial
@@ -12,13 +14,15 @@ import java.io.*;
 
 public class FeatureCalculator 
 {	
+	// main method is never used
 	public static void main(String[] args) throws FileNotFoundException
 	{
 		//System.out.println(getFeaturesString("GLFDIIKKIAESF", true));
-		System.out.println(getFeaturesString("ACDEFGHIKLMNPQRSTVWY", true));
+		System.out.println(getFeaturesString("ACDEFGHIKLMNPQRSTVWY", true)); // test case
 	}
 	
-	// activity is 1 if it's active, 0 if inactive
+	// getFeaturesString() returns a formatted csv string with the given peptide's calculated descriptors 
+	// (activity is 1 if it's active, 0 if inactive)
 	public static String getFeaturesString(String seq, boolean activity)
 	{
 		String s = seq;
@@ -39,7 +43,8 @@ public class FeatureCalculator
 		return s;
 	}
 	
-	// if NO ACTIVITY IS GIVEN
+	// if no activity is given, this method is another version of getFeaturesString() above. 
+	// I use this method when I read sample sequences and do not know its activity
 	public static String getFeaturesString(String seq)
 	{
 		String s = seq;
@@ -56,6 +61,7 @@ public class FeatureCalculator
 		return s;
 	}
 	
+	// returns the length of a sequence
 	public static int getLength(String sequence)
 	{
 		return sequence.length();
@@ -176,10 +182,10 @@ public class FeatureCalculator
 	}
 	
 	
+	// return the total charge of a peptide, discounting polarities and assuming the following:
 	// K and R are positive, E and D are negative
-	// Histinine has pka of 6-6.5, so counted it as having 0.1 positive charge [see source below]
+	// Histinine has pka of 6-6.5, so counted it as having 0.1 positive charge
 	// source: https://pepcalc.com/ppc.php
-	// Limitations: Discounts polarities
 	public static double getTotalCharge(String seq)
 	{
 		String pos = "KR";
@@ -198,7 +204,7 @@ public class FeatureCalculator
 		return charge;
 	}
 	
-	// total positive charge
+	// returns total positive charge
 	public static double getTotalPositiveCharge(String s)
 	{
 		String pos = "KR";
@@ -214,7 +220,7 @@ public class FeatureCalculator
 		return charge;
 	}
 	
-	// total negative charge
+	// returns total negative charge
 	public static double getTotalNegativeCharge(String s)
 	{
 		String neg = "ED";
@@ -229,7 +235,7 @@ public class FeatureCalculator
 	}
 	
 	// average position of positive charge
-	// formula: (xw1+xw2+xw3)/(w1+w2+w3) <- weight is magnitude of charge
+	// weighted avg formula: (xw1+xw2+xw3)/(w1+w2+w3) 
 	// if no positive charges, return the midpoint
 	public static double getAveragePositivePosition(String s)
 	{
@@ -255,7 +261,7 @@ public class FeatureCalculator
 	}
 	
 	// average position of negative charge
-	// formula: (xw1+xw2+xw3)/(w1+w2+w3) <- weight is magnitude of charge
+	// formula: (xw1+xw2+xw3)/(w1+w2+w3) <- weighted average for position
 	public static double getAverageNegativePosition(String s)
 	{
 		String neg = "ED";
@@ -274,7 +280,7 @@ public class FeatureCalculator
 		return s.length()/2.0;
 	}
 	
-	// weight measured in DA's, aka g/mol
+	// returns the weight of a peptide measured in DA's, aka g/mol
 	// Formula: Add weight of each amino acid, subtract (N-1)*17.99 <- the weight of each H2O bond
 	// Disregards weight of terminus
 	// source: https://www.selleckchem.com/peptide-calculator.html (molecular weight calculator)
@@ -287,8 +293,8 @@ public class FeatureCalculator
 			char c = sequence.charAt(i);
 			switch (c) 
 			{
-				case 'A': weight +=	89.09; break;
-				case 'C': weight +=	121.16; break;
+				case 'A': weight += 89.09; break;
+				case 'C': weight += 121.16; break;
 				case 'D': weight += 133.10; break;
 				case 'E': weight += 147.13; break;
 				case 'F': weight += 165.19; break;
@@ -313,15 +319,6 @@ public class FeatureCalculator
 		// round to hundredths place to avoid rounding errors, and keep 2 decimal places
 		weight = (int)(weight*100)/100.0;
 		return weight;
-	}
-	
-	public static int getAcidic(String sequence)
-	{
-		return 0;
-	}
-	public static double getBasic(String sequence)
-	{
-		return 0.0;
 	}
 }
 
